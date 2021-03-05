@@ -23,13 +23,19 @@ then
 # loop para ler o arquivo
 	while [ $saida -eq 0 ] 
 	do
+# Vejo se é ao conectar (up)
+		if echo $2 | grep up > /dev/null 2>&1
+		then
 # Guarda a primeira ocorrencia iniciando por nameserver para testar
 		nameserver=$(cat /etc/resolv.conf | grep -m1 ^nameserver|awk '{ print $NF }')
 # Testa se o DNS é da rede da empresa se for muda para 1 a variável e sai do loop
-		if echo $nameserver | grep $redeempresa > /dev/null 2>&1
-		then
+			if echo $nameserver | grep $redeempresa > /dev/null 2>&1
+			then
+				saida=1
+			fi
+		else
+			sleep 5
 			saida=1
-			exit
 		fi
 # Seguranca espera antes de reiniciar o serviço
 	sleep 2
