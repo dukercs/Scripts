@@ -1,0 +1,9 @@
+---
+  usuarios:
+  - "dtfti":
+      nome: "dtfti"
+      senha: "$6$CSUuen8.$7uP/7I07Lu9uFM2.StedxXqbj4PdSz8nfauYAmRKXLtKn5dnPvVFwRdAeXytLOY4KwUKK4lwISBnK1H.ErDS90"
+
+  - "dtfarc":
+      nome: "dtfarc"
+      senha: "$6$CbSUYVe.$laqUVEK8OvmS2eziDMxeeHqE0ltIznWzj/d4pMtXAA9IQjcc/l5.dR.y7lg2MGyhwE.mfIRqQVv1d.QQnpUJ2."

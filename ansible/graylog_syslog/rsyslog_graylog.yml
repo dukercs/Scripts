@@ -1,0 +1,17 @@
+---
+- hosts: "{{host}}"
+  become: yes
+  tasks:
+
+  - name: Copiar script Python
+    copy:
+      src: /home/dtfansi/ansible/graylog_syslog/graylogdtf.conf
+      dest: /etc/rsyslog.d/graylogdtf.conf
+      owner: root
+      group: root
+      mode: 0755
+
+  - name: Reiniciar rsyslog
+    service:
+      name: rsyslog
+      state: restarted
