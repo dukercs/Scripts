@@ -2,7 +2,7 @@
 # Script: InternetNaVPN.ps1
 # Funcao: Liberar acesso à Internet quando conectado a VPN pelo Windows 10 (Não testei em outras versões)
 # Funcionamento: Desabilita a rota padrão como ip de vpn (SplitTunneling fica $true) e adiciona rotas da sua empresa para a VPN (Add-VpnConnectionRoute)
-# 
+# Versão: 1.01 - Declarei a variavel redes como array linha 164 e comentei um teste que estava write-host na linha 179
 
 # Limpeza de variáveis
 $global:conecnome = ""
@@ -161,6 +161,7 @@ if( "$split" -eq "False" ){
 
 # Repetição para pegar um ou mais endereços de rede para fazer a configuração.
 Clear-Item variable:redes 2>&1>$null
+$redes = @()
 DO
 {
 ipRede
@@ -175,7 +176,7 @@ Until($global:rede -eq $null)
 # Valida se tem endereços para serem adicionadas rodas para VPN 
 #FIXME Não valida se já existe a rota adiciona regra sobreescrevendo.
 # Adiciona rotas mas pede confirmação
-Write-Host $redes
+#Write-Host $redes
 if($redes.Length -gt 0){
 echo "Adicionar roteamento dinânico na VPN"
 	Clear-Item Variable:ip 2>&1>$null
