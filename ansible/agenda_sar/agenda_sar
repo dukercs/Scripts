@@ -1,0 +1,14 @@
+---
+  - hosts: "{{host}}"
+    tasks:
+      - name: "Existe arquivo do agendamento"
+        stat:
+          path: /etc/cron.d/sysstat
+        register: sysstat_existe
+      - name: Altera agendamento
+        become: yes
+        ansible.builtin.replace:
+          path: /etc/cron.d/sysstat
+          regexp: '\*\/10'
+          replace: '*/1'
+        when: sysstat_existe.stat.exists == true
