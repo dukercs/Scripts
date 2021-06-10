@@ -1,0 +1,12 @@
+---
+- hosts: "{{host}}"
+  tasks:
+    - name: Muda a senha do usuário {{ usuario }}
+      become: yes
+      user:
+        name: "{{ usuario }}"
+        password: "{{ senha | password_hash('sha512') }}"
+        update_password: always
+      when: 
+        - usuario is defined
+        - senha is defined
