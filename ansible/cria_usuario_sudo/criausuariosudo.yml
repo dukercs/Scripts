@@ -1,32 +1,28 @@
 ---
 - hosts: "{{host}}"
   gather_facts: false
-  vars_files: vars/usuarios.yaml
   become: yes
 
   tasks:
-    - name: Usuários criados
-      debug:
-        msg: "Usuarios {{ item.value.nome }} com senha {{ item.value.senha}} ."
-      with_dict: "{{ usuarios }}"
-
     - name: Verifica e cria grupo sudo_ti caso nao exista
       group:
         name: sudo_ti
         state: present
 
-    - name: Criar usuário {{ item.value.nome }}
+    - name: Criar usuário {{ usuario }}
       user:
-        name: "{{ item.value.nome }}"
+        name: "{{ usuario }}"
         state: present
         force: yes
-        password: "{{ item.value.senha }}"
+        password: "{{ senha | password_hash('sha512') }}"
         shell: /bin/bash
         create_home: yes
         update_password: on_create
         append: yes
         groups: sudo_ti
-      with_dict: "{{ usuarios }}"
+      when:
+        - usuario is defined
+        - senha is defined
 
     - name: Copiar arquivo do sudoers para grupo sudo_ti
       copy:
