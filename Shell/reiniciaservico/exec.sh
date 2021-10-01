@@ -10,15 +10,18 @@
 # 6 servico nao existe
 
 
+# Mensagem para caso tente executar em horário comercial
+
+hrcomercial="Horario comercial faca a execucao manualmente"
 
 # fonte de funcoes
-if [ ! -f ./functestes.sh ]
+if [ ! -f /opt/reiniciaservico/functestes.sh ]
 then
 	echo ERRO NAO ENCONTREI O ARQUIVO DE FUNCOES
 	exit 5
 fi
 
-source ./functestes.sh
+source /opt/reiniciaservico/functestes.sh
 
 
 # Recebe o serviço a ser reiniciado por parametro posicionado na posicao 1
@@ -32,20 +35,15 @@ retorno=$(horariocomercial)
 
 if [ ${retorno:=0} -eq 0 ]
 then 
-	echo mensagem para reiniciar o serviço pois esta em horario comercial
+	echo $hrcomercial
 	exit 7
 fi
 
 
-
-
-
-
-
-
-
 # testa se servico existe
-service $servico status > /dev/null 2>&1
+SERVT=$(which service)
+${SERVT:=/usr/sbin/service} $servico status > /dev/null 2>&1
+
 if [ $? -ne 0 ]
 then
 	echo Erro: O servico $servico nao existe
