@@ -25,7 +25,12 @@ done
 
 }
 
-# Esta funcao faz o start ou stop da aplicacao e verifica com o pgrep se o processo parou ou iniciou e alerta se demorar mais de 60 ciclos com 1 segundo de sleep
+# Esta funcao faz o start ou stop da aplicacao e verifica com o service $2 status o processo está rodando ou não e alerta se demorar mais de 60 ciclos com 1 segundo de sleep
+# Update fiz mudanca do pgrep versao anterior para service status pois o serviço wildfly roda com processo java pgrep não pegou.
+# Aqui com a variavel de ambiente $? pego a saida do status e coloco em outra variavel para testar (não era obrigatório mas achei mais legível).
+# Variaveis eatualstart e eatualstop 
+# 	Se a eatualstart for diferente de 0 quer dizer que o serviço ainda não iniciou aguarde e some a tempo.
+#   Se a eatualstop for igual a zero quer dizer que o serviço ainda não parou, aguarde e soma o tempo.
 function servicostatus(){
 local SERV=$(which service)
 
@@ -35,8 +40,9 @@ while [ $tempo -gt 0 ] && [ $tempo -le 60 ]
 do
 	if [ "$1" == "start" ] 
 	then
-
-		if ! pgrep $2 > /dev/null 
+		${SERV:=/usr/sbin/service} $2 status > /dev/null 2>&1
+		eatualstart=$?
+		if [ $eatualstart -ne 0 ]
 		then
 			sleep 1 
 			let tempo++
@@ -44,8 +50,9 @@ do
 			tempo=0
 		fi
 	else
-
-		if pgrep $2 > /dev/null 
+		${SERV:=/usr/sbin/service} $2 status > /dev/null 2>&1
+		eatualstop=$?
+		if [ $eatualstop -eq 0 ] 
 		then
 			sleep 1 
 			let tempo++
