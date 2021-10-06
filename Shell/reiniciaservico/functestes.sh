@@ -107,7 +107,7 @@ if [ $semana -eq 6 ] || [ $semana -eq 7 ]
 then
         echo 2
 else
-        if [ $hora -ge 18 ] || [ $hora -lt 15 ]
+        if [ $hora -ge 18 ] || [ $hora -lt 9 ]
         then
                 echo 3
         fi
