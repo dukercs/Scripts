@@ -44,7 +44,7 @@ fi
 SERVT=$(which service)
 ${SERVT:=/usr/sbin/service} $servico status > /dev/null 2>&1
 
-if [ $? -ne 0 ]
+if [ $? -gt 3 ]
 then
 	echo Erro: O servico $servico nao existe
 	exit 6
@@ -76,6 +76,32 @@ fi
 
 # Para o serviço com testes
 servicostatus stop $servico
+saidastop=$?
+timeout=0
+while [ $saidastop -ne 0 -o $timeout -eq 50 ]
+do
+	sleep 1
+ 	servicostatus stop $servico
+ 	saidastop=$?
+ 	let timeout++
+done
+
+
 
 # Inicia o serviço com testes
 servicostatus start $servico
+saidastart=$?
+timeout=0
+while [ $saidastart -ne 0 ] && [ $timeout -le 50 ]
+do
+	sleep 1
+	servicostatus start $servico
+	saidastart=$?
+	let timeout++
+done
+
+
+if [ $timeout -gt 50 ]
+then
+	exit 4
+fi
