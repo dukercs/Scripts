@@ -34,39 +34,69 @@ done
 function servicostatus(){
 local SERV=$(which service)
 
+#FIXME Pegar o processo pelo status pode não funcionar se a saida do status não tiver uma linha com a string pid 
+pidantes=0
+pidantes=$(${SERV:=/usr/sbin/service} $2 status |grep -i pid|grep -Pwo '[0-9]+\d+')
+
 ${SERV:=/usr/sbin/service} $2 $1
-tempo=1
-while [ $tempo -gt 0 ] && [ $tempo -le 60 ]
-do
-	if [ "$1" == "start" ] 
-	then
-		${SERV:=/usr/sbin/service} $2 status > /dev/null 2>&1
-		eatualstart=$?
-		if [ $eatualstart -ne 0 ]
-		then
-			sleep 1 
-			let tempo++
-		else
-			tempo=0
-		fi
-	else
-		${SERV:=/usr/sbin/service} $2 status > /dev/null 2>&1
-		eatualstop=$?
-		if [ $eatualstop -eq 0 ] 
-		then
-			sleep 1 
-			let tempo++
-		else
-			tempo=0
-		fi
+retornostartstop=$?
+if [ $retornostartstop -ne 0 ]
+then
+	# echo 5
+	return 5
+fi
 
-	fi
 
-	if [ $tempo -ge 60 ]
-	then
-		exit 4
-	fi
-done
+
+
+if [ $retornostartstop = 0 ] # Testo se o retorno do comando de start/stop foi sucesso 0 se não foi nem executo pois o return 5 já foi feito no if anterior
+then
+	tempo=1 # variavel em 1 para não sair do while onde o tempo tem que ser maior que 0 ou menor igual a 60 
+	while [ $tempo -gt 0 ] && [ $tempo -le 60 ] 
+	do
+		if [ "$1" == "start" ] # testo se o pedido é para iniciar
+		then
+			${SERV:=/usr/sbin/service} $2 status > /dev/null 2>&1 
+			eatualstart=$? # pego o retorno do status pra ver se está parado pois se estiver com erro ou parado ele retorna diferente de 0, sendo assim ainda não iniciou
+			if [ $eatualstart -ne 0 ] # testo se é diferente de 0 se for aguardo 1 e acrescento o tempo pra timeout do start no while 
+			then
+				sleep 1 
+				let tempo++
+			else
+				pidposstart=$(${SERV:=/usr/sbin/service} $2 status |grep -i pid|grep -Pwo '[0-9]+\d+') # pegando o processo após o start
+				if [ -n $pidantes ] && [ -n $pidposstart ] # vendo se existem valores nas variaveis do pid antes e pid após o start $pidantes e $pidposstart 
+				then
+					if [ $pidantes -ne $pidposstart ] && [ -e /proc/$pidposstart ] # Testando se não são iguais e se o processo após start está em execucao se for ok tempo zera e pode sair do loop se não retorna 5
+					then
+						tempo=0
+					else
+						return 5
+					fi
+				elif [ -n $pidposstart ] && [ -e /proc/$pidposstart ] # Se a pidantes não tiver valor ainda preciso testar a pid após start $pidposstart tem e se está rodando se for verdadeiro zera o tempo e sai do loop se não for retorna 5
+					then
+					tempo=0
+				else
+					return 5
+				fi
+			fi
+		else # aqui pego o stop ou qualquer outro valor #FIXME vou testar depois com case.
+			${SERV:=/usr/sbin/service} $2 status > /dev/null 2>&1 # Vejo o estado atual
+			eatualstop=$? #Guardo ele em uma variavel para o stop $eatualstop
+			if [ $eatualstop -eq 0 ] # Testo se é 0 pois se for quer dizer que mandei parar e ainda não parou # ja foi testado o retorno do comando para parar
+			then
+				sleep 1 
+				let tempo++
+			else
+				tempo=0
+			fi
+		fi
+		# Timeout se o tempo chegar a maior que 60 ele faz o exit antes do próximo while 
+		if [ $tempo -ge 60 ]
+		then
+			exit 4
+		fi
+	done
+fi
 }
 
 horariocomercial(){
@@ -77,7 +107,7 @@ if [ $semana -eq 6 ] || [ $semana -eq 7 ]
 then
         echo 2
 else
-        if [ $hora -ge 18 ] || [ $hora -lt 9 ]
+        if [ $hora -ge 18 ] || [ $hora -lt 15 ]
         then
                 echo 3
         fi
