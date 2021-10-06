@@ -10,8 +10,11 @@
 # 6 servico nao existe
 
 
-# Mensagem para caso tente executar em horário comercial
 
+# lista com os pontos de montagem a serem verificados ajuste de acordo com a sua necessidade, é uma lista separada por espaço simples.
+pontom=(/ /home)
+
+# Mensagem para caso tente executar em horário comercial
 hrcomercial="Horario comercial faca a execucao manualmente"
 
 # fonte de funcoes
@@ -26,8 +29,6 @@ source /opt/reiniciaservico/functestes.sh
 
 # Recebe o serviço a ser reiniciado por parametro posicionado na posicao 1
 servico=$1
-
-
 
 
 # Verifica se esta fora do horario comercial
@@ -58,13 +59,17 @@ then
 fi
 
 
-# Valida se tem espaco livre no /dados
 
-espacoLivre /dados
-if [ $? -eq 3 ];
-then
-	exit $?
-fi
+
+# Valida o espaço livre na lista ${pontom[@]}
+for m in "${pontom[@]}"
+do
+	espacoLivre ${m:=/}
+	if [ $? -eq 3 ];
+	then
+		exit $?
+	fi
+done
 
 
 # Valida se tem espaco livre na particao raíz /
