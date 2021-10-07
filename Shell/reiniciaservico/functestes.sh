@@ -93,7 +93,7 @@ then
 		# Timeout se o tempo chegar a maior que 60 ele faz o exit antes do próximo while 
 		if [ $tempo -ge 60 ]
 		then
-			exit 4
+			return 4
 		fi
 	done
 fi
