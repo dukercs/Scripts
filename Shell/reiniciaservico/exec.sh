@@ -9,7 +9,8 @@
 # 5 para arquivo de funcoes nao encontrado
 # 6 servico nao existe
 
-
+# Diretorio de instalação do reinicia deve conter o functestes.sh
+instaladir=/opt/reiniciaservico
 
 # lista com os pontos de montagem a serem verificados ajuste de acordo com a sua necessidade, é uma lista separada por espaço simples.
 pontom=(/ /home)
@@ -17,14 +18,51 @@ pontom=(/ /home)
 # Mensagem para caso tente executar em horário comercial
 hrcomercial="Horario comercial faca a execucao manualmente"
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+################################## FAVOR NÃO ALTERAR ABAIXO DESTA LINHA  FAÇA-O SOMENTE SE SOUBER O QUE ESTÁ FAZENDO  ###############################################################
+
+
+# Ajuste no path para rodar pelo cron 
+# Busca pelo arquivo com a variavel PATH em /etc/environment e se a linha PATH tem o sbin se for verdadeiro carrega mas se não existir adiciona um PATH fixo ao atual
+#FIXME o /etc/enviroment pode estar em outro local ou não conter o PATH que precisa para o script rodar.
+#
+
+
+if [ -e /etc/environment ]
+then
+	if grep -i PATH /etc/environment > /dev/null 2>&1 && grep -i sbin /etc/environment > /dev/null 2>&1
+	then
+        . /etc/environment
+	fi
+else
+        export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$PATH"
+fi
+
+
+
+
+
+
 # fonte de funcoes
-if [ ! -f /opt/reiniciaservico/functestes.sh ]
+if [ ! -f ${instaladir}/functestes.sh ]
 then
 	echo ERRO NAO ENCONTREI O ARQUIVO DE FUNCOES
 	exit 5
 fi
 
-source /opt/reiniciaservico/functestes.sh
+source ${instaladir}/functestes.sh
 
 
 # Recebe o serviço a ser reiniciado por parametro posicionado na posicao 1
