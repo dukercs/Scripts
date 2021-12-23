@@ -24,7 +24,7 @@ f_curl(){
         tsistema=$(expr $(date +%s) - $(stat -c %Y /proc/uptime))
     done
 
-    $cURL -o /dev/null -L -f --retry 6 --max-time 5 --retry-delay 10 --retry-max-time 60 $site
+    $cURL curl -m 15 -s -o /dev/null -L -w "%{http_code}" $site > /tmp/saudevalida.txt 2>&1
     if test $? -ne 0 
     then
         kill -9 -1
