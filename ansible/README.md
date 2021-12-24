@@ -14,3 +14,10 @@ Cria usu√°rios e um grupo sudo_ti a partir de um arquivo contendo o nome do usu√
  3. Python3<br />
   `$ python3 -c 'import crypt; print(crypt.crypt("suasenhatexto", crypt.mksalt(crypt.METHOD_SHA512)))' `
 
+## Exemplo/Example
+
+    healthcheck:
+        test: sh -x /home/rundeck/saudevalida.sh -c http://127.0.0.1:4440 300 > /tmp/exechealthcheck.log 2>&1
+        interval: 1m
+        timeout: 10s
+        retries: 2
