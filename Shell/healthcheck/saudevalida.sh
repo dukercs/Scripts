@@ -29,6 +29,7 @@ f_curl(){
     then
         kill -9 -1
     fi
+    return 0
 }
 
 f_netcat(){
@@ -45,6 +46,7 @@ f_netcat(){
     then
         kill -9 -1
     fi
+    return 0
 }
 
 
