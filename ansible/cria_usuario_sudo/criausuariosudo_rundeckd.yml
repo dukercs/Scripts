@@ -1,0 +1,37 @@
+---
+- hosts: "{{host}}"
+  gather_facts: false
+  become: yes
+
+  tasks:
+    - name: Verifica e cria grupo sudo_ti caso nao exista
+      group:
+        name: sudo_ti
+        state: present
+
+    - name: Criar usuário {{ usuario }}
+      user:
+        name: "{{ usuario }}"
+        state: present
+        force: yes
+        shell: /bin/bash
+        create_home: yes
+        update_password: on_create
+        append: yes
+        groups: sudo_ti
+      when:
+        - usuario is defined
+
+    - name: Set authorized key took from file
+      authorized_key:
+        user: "{{ usuario }}"
+        state: present
+        key: "{{ lookup('file', 'files/runcked.pem.pub') }}"
+
+    - name: Copiar arquivo do sudoers para grupo sudo_ti
+      copy:
+        src: files/sudo_ti
+        dest: /etc/sudoers.d/sudo_ti
+        owner: root
+        group: root
+        mode: 0644
