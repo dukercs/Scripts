@@ -1,7 +1,7 @@
 ## randwall.sh
 Ele cria um arquivo oculto no seu home contendo o nome do wallpaper dinâmico a ser usado no DWALL \${HOME}/.DWALL e qual foi o último usado \${HOME}/.DWALL.lw. <br />
 Exemplo de uso: <br />
-- `dwall -s $(cat ${HOME}/.DWALL)-s`
+- `dwall -s $(cat ${HOME}/.DWALL)`
 
 Execute o seu crontab de acordo com o [manual do DWALL](https://github.com/adi1090x/dynamic-wallpaper#setup-cron-job)
 
