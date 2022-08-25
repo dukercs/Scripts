@@ -28,6 +28,7 @@ cat /etc/kubernetes/manifests/kube-apiserver.yaml|egrep -i etcd
 
 ## Restore <br />
 
-Não quero reinventar a roda, então testei o script gerado por este backup com este processo do <a href=https://github.com/mmumshad>Mumshad Mannambeth</a> créditos a ele :clap: <a href=https://github.com/mmumshad/kubernetes-cka-practice-test-solution-etcd-backup-and-restore>Restore ETCD</a> <br />
+Testei o snapshot gerado por este script com este processo do <a href=https://github.com/mmumshad>Mumshad Mannambeth</a> créditos a ele :clap::clap: <br /><a href=https://github.com/mmumshad/kubernetes-cka-practice-test-solution-etcd-backup-and-restore>Restore ETCD</a> <br />
 
-#### Apenas uma ressalva como no script eu faço um teste de status do backup é necessário adicionar a flag --skip-hash-check=true pq o status abre o snap.
+#### Ressalva:
+* Como no script eu faço um teste de status do snapshot é necessário adicionar a flag --skip-hash-check=true pq o status abre o snap.
