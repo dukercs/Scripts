@@ -1,12 +1,14 @@
 ## Script simples que usei durante o treinamento descomplicando o k8s da LinuxTips para backup/snapshot do meu ambiente local
 <br />
-### Linha do crontab usado em teste: Use de acordo com sua necessidade olhe a var PATH do(s) node(s) master(s) onde roda o etcd ajuste seu diretório pode brincar as variáveis de certificado e o member list peguei do manifesto kube-apiserver.yaml ta tudo abaixo<br />
+
+#### Linha do crontab usado em teste: Use de acordo com sua necessidade olhe a var PATH do(s) node(s) master(s) onde roda o etcd ajuste seu diretório pode brincar as variáveis de certificado e o member list peguei do manifesto kube-apiserver.yaml ta tudo abaixo<br />
 
 ```console
 echo $PATH
 /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
 ```
-### Pegando valores de chaves e membros
+
+#### Pegando valores de chaves e membros
 ```console
 cat /etc/kubernetes/manifests/kube-apiserver.yaml|egrep -i etcd
 #Retorno do comando acima:
@@ -16,13 +18,16 @@ cat /etc/kubernetes/manifests/kube-apiserver.yaml|egrep -i etcd
     - --etcd-servers=https://127.0.0.1:2379 # var membro no script
 ```
 
-### Linha do meu crontab de teste
+####Linha do meu crontab de teste
 ```console
 45 15 * * * PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin && /opt/etcdbackup/script/backupetcd.sh 2>&1 > /tmp/log.backupetcd.sh
 
 ```
 
 <hr />
+
 ## Restore <br />
+
 Não quero reinventar a roda, então testei o script gerado por este backup com este processo do <a href=https://github.com/mmumshad>Mumshad Mannambeth</a> créditos a ele :clap: <a href=https://github.com/mmumshad/kubernetes-cka-practice-test-solution-etcd-backup-and-restore>Restore ETCD</a> <br />
-### Apenas uma ressalva como no script eu faço um teste de status do backup é necessário adicionar a flag --skip-hash-check=true pq o status abre o snap.
+
+#### Apenas uma ressalva como no script eu faço um teste de status do backup é necessário adicionar a flag --skip-hash-check=true pq o status abre o snap.
