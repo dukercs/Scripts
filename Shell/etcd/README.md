@@ -1,7 +1,7 @@
 ## Script simples que usei durante o treinamento descomplicando o k8s da LinuxTips para backup do meu ambiente local
 <br />
 ### Linha do crontab usado em teste: Use de acordo com sua necessidade olhe a var PATH do(s) node(s) master(s) onde roda o etcd ajuste seu diretório pode brincar as variáveis de certificado e o member list peguei do manifesto kube-apiserver.yaml ta tudo abaixo
-```bash
+```console
 echo $PATH
 /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
 
