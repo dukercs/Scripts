@@ -15,14 +15,17 @@
 
 # /opt/promtail/promtail-linux-amd64 -config.file /opt/promtail/config-promtail.yml
 set -e
+test $UID -eq 0 || echo "Apenas root!" && exit 1
+test -z "$1" && echo Use $0 start, stop, restart
 
+RNUM=$1
 DAEMON=/opt/promtail/promtail-linux-amd64
 CONFIG_FILE=/opt/promtail/config-promtail.yml
-LOG=/opt/promtail/log/prom.log
+LOG=/var/log/prom.log
 PIDFILE=/opt/promtail/run.pid
 
-test -x $DAEMON || exit 0
-test -f $CONFIG_FILE || exit 0
+test -x $DAEMON || exit 2
+test -f $CONFIG_FILE || exit 3
 
 export PATH="${PATH:+$PATH:}/usr/sbin:/sbin"
 
@@ -41,3 +44,9 @@ stop(){
         kill -9 $PIDNOW
     fi
 }
+case $RNUM in
+         "start") star;;
+         "stop") stop;;
+         "restart") stop && start;;
+         "*") echo Use $0 start, stop, restart;;
+esac
